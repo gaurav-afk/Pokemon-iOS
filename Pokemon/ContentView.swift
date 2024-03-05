@@ -14,18 +14,32 @@ struct ContentView: View {
     private var pokedex: FetchedResults<Pokemon>
 
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(pokedex) { poke in
-                    NavigationLink {
-                        Text("\(poke.id) : \(poke.name!.capitalized)")
-                    } label: {
-                        Text("\(poke.id) : \(poke.name!.capitalized)")
+        NavigationStack {
+            List(pokedex) { poke in
+                NavigationLink(value: poke) {
+                    AsyncImage(url: poke.sprite){ image in
+                            image
+                            .resizable()
+                            .scaledToFit()
+                    }placeholder: {
+                        ProgressView()
                     }
-                }
+                    .frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 100)
+                    
+                        Text("\(poke.name!.capitalized)")
+                    }
             }
-        } detail: {
-            Text("Select an item")
+            .navigationTitle("Pokedex")
+            .navigationDestination(for: Pokemon.self, destination: { pokemon in
+                AsyncImage(url: pokemon.sprite){ image in
+                    image
+                    .resizable()
+                    .scaledToFit()
+                }placeholder: {
+                    ProgressView()
+                }
+                .frame(width: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/, height: 100)
+            })
         }
     }
 }
